@@ -71,6 +71,7 @@ src/
 │       │   └── dependencies.test-env.ts
 │       ├── react/
 │       │   ├── useDependencies.tsx
+│       │   ├── render.tsx
 │       │   └── renderHook.tsx
 │       └── main.ts
 │
@@ -85,15 +86,15 @@ src/
 
 ## File Naming Conventions
 
-| Type | Extension | Example |
-|------|-----------|---------|
-| Entity | `.entity.ts` | `User.entity.ts` |
-| Port | `.port.ts` | `AuthRepository.port.ts` |
-| Use Case | `.usecase.ts` | `Login.usecase.ts` |
-| Adapter | `.adapter.ts` | `AuthApi.adapter.ts` |
-| ViewModel | `.viewModel.tsx` | `useLogin.viewModel.tsx` |
-| Store | `.store.ts` | `auth.store.ts` |
-| Model (API response) | `.model.ts` | `LoginResponse.model.ts` |
+| Type                 | Extension        | Example                  |
+| -------------------- | ---------------- | ------------------------ |
+| Entity               | `.entity.ts`     | `User.entity.ts`         |
+| Port                 | `.port.ts`       | `AuthRepository.port.ts` |
+| Use Case             | `.usecase.ts`    | `Login.usecase.ts`       |
+| Adapter              | `.adapter.ts`    | `AuthApi.adapter.ts`     |
+| ViewModel            | `.viewModel.tsx` | `useLogin.viewModel.tsx` |
+| Store                | `.store.ts`      | `auth.store.ts`          |
+| Model (API response) | `.model.ts`      | `LoginResponse.model.ts` |
 
 React components: `PascalCase.tsx` (e.g., `LoginScreen.tsx`, `AuthenticationCard.tsx`)
 
@@ -148,10 +149,10 @@ Everything React-specific for the bounded context.
 
 **When to use a Use Case vs direct Adapter?**
 
-| Situation | Approach |
-|-----------|----------|
-| Simple fetch, basic CRUD | Direct adapter + React Query |
-| Business logic, validation, orchestration | Use Case |
+| Situation                                 | Approach                     |
+| ----------------------------------------- | ---------------------------- |
+| Simple fetch, basic CRUD                  | Direct adapter + React Query |
+| Business logic, validation, orchestration | Use Case                     |
 
 ```typescript
 // ✅ Simple CRUD → direct adapter
@@ -163,7 +164,10 @@ const query = useQuery({
 
 // ✅ Business logic → use case
 const { authRepository } = useDependencies();
-const result = await new LoginUseCase(authRepository).execute({ email, password });
+const result = await new LoginUseCase(authRepository).execute({
+  email,
+  password,
+});
 ```
 
 ## Result Pattern
@@ -226,7 +230,10 @@ export const useLoginViewModel = () => {
     login: async (email: string, password: string) => {
       setState({ status: "loading" });
 
-      const result = await new LoginUseCase(authRepository).execute({ email, password });
+      const result = await new LoginUseCase(authRepository).execute({
+        email,
+        password,
+      });
 
       if (result.success) {
         setState({ status: "success", user: result.data });
@@ -343,14 +350,14 @@ export const useItemListViewModel = () => {
 
 ### React Query Conventions
 
-| Rule | Example |
-|------|---------|
-| Query hook naming | `use[Entity].query.ts` |
-| Mutation hook naming | `use[Action][Entity].mutation.ts` |
-| Query keys naming | `[entity].queryKeys.ts` |
-| Always invalidate after mutation | `queryClient.invalidateQueries()` |
-| Use case in mutation if business logic | `new CreateItemUseCase(...).execute()` |
-| Direct adapter in query if simple fetch | `repository.getById(id)` |
+| Rule                                    | Example                                |
+| --------------------------------------- | -------------------------------------- |
+| Query hook naming                       | `use[Entity].query.ts`                 |
+| Mutation hook naming                    | `use[Action][Entity].mutation.ts`      |
+| Query keys naming                       | `[entity].queryKeys.ts`                |
+| Always invalidate after mutation        | `queryClient.invalidateQueries()`      |
+| Use case in mutation if business logic  | `new CreateItemUseCase(...).execute()` |
+| Direct adapter in query if simple fetch | `repository.getById(id)`               |
 
 ## Dependency Injection
 
@@ -574,7 +581,10 @@ export interface EventRepository {
 // modules/events/core/usecases/CreateEvent.usecase.ts
 import { Result, ok, fail } from "@/types/Result";
 import { Event, EventError } from "../entities/Event.entity";
-import { EventRepository, CreateEventParams } from "../ports/EventRepository.port";
+import {
+  EventRepository,
+  CreateEventParams,
+} from "../ports/EventRepository.port";
 
 export class CreateEventUseCase {
   constructor(private eventRepository: EventRepository) {}
@@ -586,7 +596,10 @@ export class CreateEventUseCase {
     }
 
     if (new Date(params.date) < new Date()) {
-      return fail({ type: "VALIDATION_ERROR", message: "Date must be in future" });
+      return fail({
+        type: "VALIDATION_ERROR",
+        message: "Date must be in future",
+      });
     }
 
     return this.eventRepository.create(params);
@@ -602,7 +615,10 @@ Implement the port.
 // modules/events/infrastructure/adapters/EventApi.adapter.ts
 import { Result, ok, fail } from "@/types/Result";
 import { Event, EventError } from "../../core/entities/Event.entity";
-import { EventRepository, CreateEventParams } from "../../core/ports/EventRepository.port";
+import {
+  EventRepository,
+  CreateEventParams,
+} from "../../core/ports/EventRepository.port";
 import { EventApiResponse } from "./EventApiResponse.model";
 
 export class EventApiAdapter implements EventRepository {
@@ -785,11 +801,12 @@ export const CreateEventScreen = () => {
 #### Example: extracting an API call from a component
 
 **Before (violation):**
+
 ```typescript
 // ❌ Direct API call in component
 const EventList = () => {
   const [events, setEvents] = useState([]);
-  
+
   useEffect(() => {
     fetch("https://api.example.com/events")
       .then((r) => r.json())
@@ -799,11 +816,12 @@ const EventList = () => {
 ```
 
 **After (clean):**
+
 ```typescript
 // ✅ Adapter + Query + ViewModel
 const EventList = () => {
   const { state } = useEventListViewModel();
-  
+
   return <FlatList data={state.events} />;
 };
 ```

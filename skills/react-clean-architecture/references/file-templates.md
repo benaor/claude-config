@@ -85,7 +85,10 @@ export class LoginUseCase {
 import { Result, ok, fail } from "@/types/Result";
 import { User } from "../../core/entities/User.entity";
 import { AuthError } from "../../core/entities/AuthError.entity";
-import { AuthRepository, LoginParams } from "../../core/ports/AuthRepository.port";
+import {
+  AuthRepository,
+  LoginParams,
+} from "../../core/ports/AuthRepository.port";
 import { LoginApiResponse } from "./LoginApiResponse.model";
 
 export class AuthApiAdapter implements AuthRepository {
@@ -193,7 +196,9 @@ export const useUpdateUserMutation = () => {
   return useMutation({
     mutationFn: updateUserUseCase.execute.bind(updateUserUseCase),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: usersKeys.detail(variables.id) });
+      queryClient.invalidateQueries({
+        queryKey: usersKeys.detail(variables.id),
+      });
       queryClient.invalidateQueries({ queryKey: usersKeys.lists() });
     },
   });
@@ -291,7 +296,9 @@ export const UserProfileScreen = ({ route }) => {
   }
 
   if (state.error) {
-    return <ErrorMessage message={state.error.message} onRetry={handlers.refresh} />;
+    return (
+      <ErrorMessage message={state.error.message} onRetry={handlers.refresh} />
+    );
   }
 
   return (
@@ -302,3 +309,7 @@ export const UserProfileScreen = ({ route }) => {
   );
 };
 ```
+
+## Test Utilities
+
+For `renderHook.tsx` and `render.tsx` templates with dependency injection, see the `testing-conventions` skill.
