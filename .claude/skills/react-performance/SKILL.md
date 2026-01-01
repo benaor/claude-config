@@ -5,24 +5,41 @@ description: React Native performance optimization guide. Use when working on pe
 
 # React Native Performance
 
+## How to Use This Skill
+
+1. **Read ONLY this file first** - Don't load references yet
+2. **Use Quick Diagnosis table** to identify the ONE relevant reference
+3. **Load ONLY that reference** - Never load multiple references at once
+4. **If user's problem is unclear** - Ask clarifying questions before loading any reference
+
+> ⚠️ Each reference file is 5-10KB. Loading multiple files wastes context. Be surgical.
+
 Comprehensive guide for optimizing React Native applications. Always **measure before optimizing** - use profiling tools to identify actual bottlenecks.
 
 ## Quick Diagnosis
 
-| Symptom | Start With |
-|---------|------------|
-| Too many re-renders | [rerender-optimization.md](references/rerender-optimization.md) |
-| Slow lists/scrolling | [list-optimization.md](references/list-optimization.md) |
-| App takes long to start | [startup-optimization.md](references/startup-optimization.md) |
-| Memory keeps growing | [memory-management.md](references/memory-management.md) |
+| Symptom                    | Start With                                                      |
+| -------------------------- | --------------------------------------------------------------- |
+| Too many re-renders        | [rerender-optimization.md](references/rerender-optimization.md) |
+| Slow lists/scrolling       | [list-optimization.md](references/list-optimization.md)         |
+| App takes long to start    | [startup-optimization.md](references/startup-optimization.md)   |
+| Memory keeps growing       | [memory-management.md](references/memory-management.md)         |
 | Animations dropping frames | [animation-performance.md](references/animation-performance.md) |
-| Bundle too large | [bundle-optimization.md](references/bundle-optimization.md) |
+| Bundle too large           | [bundle-optimization.md](references/bundle-optimization.md)     |
 
 ### Don't know where the problem comes from?
 
-Use [profiling.md](references/profiling.md) to investigate and identify the bottleneck first.
+**Ask the user first:**
+
+- What feels slow? (startup, scroll, animation, interaction)
+- When does it happen?
+- Which screen/component?
+
+Then load [profiling.md](references/profiling.md) ONLY if you need help guiding them through profiling.
 
 ## Reference Files
+
+> **Loading strategy**: Pick ONE file based on the diagnosed symptom. Never preload "just in case".
 
 ### 🔬 Investigation
 
@@ -57,12 +74,12 @@ Use [profiling.md](references/profiling.md) to investigate and identify the bott
 
 ## Performance Targets
 
-| Metric | Target | Tool |
-|--------|--------|------|
-| FPS | 60 (ideally 120 on capable devices) | Perf Monitor, Flashlight |
-| TTI | < 2s cold start | Native profilers |
-| JS Frame | < 16ms (8ms for 120fps) | JS Profiler |
-| Memory | Stable over time (no growth) | Heap snapshots |
+| Metric   | Target                              | Tool                     |
+| -------- | ----------------------------------- | ------------------------ |
+| FPS      | 60 (ideally 120 on capable devices) | Perf Monitor, Flashlight |
+| TTI      | < 2s cold start                     | Native profilers         |
+| JS Frame | < 16ms (8ms for 120fps)             | JS Profiler              |
+| Memory   | Stable over time (no growth)        | Heap snapshots           |
 
 ## Optimization Workflow
 
