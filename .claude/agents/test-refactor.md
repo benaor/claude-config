@@ -1,6 +1,8 @@
 ---
 name: test-refactor
 description: Improve test quality by detecting and fixing test code smells
+model: opus
+execution_model: sonnet
 ---
 
 # Test Refactor Agent
@@ -12,6 +14,7 @@ Analyze existing tests to detect code smells and quality issues. Proposes refact
 ## Trigger
 
 Use this agent when:
+
 - Tests are slow or flaky
 - Tests break frequently after refactoring
 - Test code is hard to understand
@@ -21,6 +24,7 @@ Use this agent when:
 ## Prerequisites
 
 **Required skill — load first:**
+
 ```
 view .claude/skills/testing-conventions/SKILL.md
 ```
@@ -29,12 +33,12 @@ view .claude/skills/testing-conventions/SKILL.md
 
 ## Inputs
 
-| Input | Required | Description |
-|-------|----------|-------------|
-| `testPath` | ✅ | Path to test file or folder |
-| `--check-only` | ❌ | Report issues without fixing |
-| `--auto-fix` | ❌ | Apply safe fixes automatically |
-| `--category` | ❌ | Focus on specific smell category |
+| Input          | Required | Description                      |
+| -------------- | -------- | -------------------------------- |
+| `testPath`     | ✅       | Path to test file or folder      |
+| `--check-only` | ❌       | Report issues without fixing     |
+| `--auto-fix`   | ❌       | Apply safe fixes automatically   |
+| `--category`   | ❌       | Focus on specific smell category |
 
 Categories: `flaky`, `slow`, `fragile`, `obscure`, `coupled`, `over-mocked`
 
@@ -47,6 +51,7 @@ view .claude/skills/testing-conventions/SKILL.md
 ```
 
 Key anti-patterns to detect:
+
 - Testing implementation details
 - Over-mocking
 - Flaky tests (timing, state)
@@ -74,6 +79,7 @@ For each test file, detect these smell categories:
 #### 🎲 FLAKY — Inconsistent results
 
 **Detect:**
+
 ```typescript
 // setTimeout/delay without proper handling
 setTimeout(() => { ... }, 100)
@@ -101,23 +107,24 @@ let sharedData = [] // Modified across tests
 #### 🐢 SLOW — Takes too long
 
 **Detect:**
+
 ```typescript
 // Real timers instead of fake
-await new Promise(r => setTimeout(r, 2000))
+await new Promise((r) => setTimeout(r, 2000));
 
 // Real network calls
-await fetch('https://api.example.com')
+await fetch("https://api.example.com");
 
 // Heavy setup repeated per test
 beforeEach(() => {
   // 50 lines of setup
-})
+});
 
 // No test isolation (full app render)
-render(<App />) // Instead of just the component
+render(<App />); // Instead of just the component
 
 // Large snapshot files
-expect(component).toMatchSnapshot() // 500+ lines
+expect(component).toMatchSnapshot(); // 500+ lines
 ```
 
 **Severity:** 🟡 MEDIUM — Slows feedback loop
@@ -127,25 +134,26 @@ expect(component).toMatchSnapshot() // 500+ lines
 #### 🔨 FRAGILE — Breaks on implementation changes
 
 **Detect:**
+
 ```typescript
 // Testing internal state
-expect(component.state.isLoading).toBe(true)
-expect(hook.internalCounter).toBe(5)
+expect(component.state.isLoading).toBe(true);
+expect(hook.internalCounter).toBe(5);
 
 // Testing private methods
-expect(instance._validateEmail()).toBe(true)
+expect(instance._validateEmail()).toBe(true);
 
 // Exact string matching on dynamic content
-expect(error.message).toBe("Error at line 42, column 12")
+expect(error.message).toBe("Error at line 42, column 12");
 
 // Asserting on specific mock call counts
-expect(mockFn).toHaveBeenCalledTimes(3) // Why exactly 3?
+expect(mockFn).toHaveBeenCalledTimes(3); // Why exactly 3?
 
 // Testing CSS classes or styles
-expect(element).toHaveClass("btn-primary-active-v2")
+expect(element).toHaveClass("btn-primary-active-v2");
 
 // Snapshot overuse
-expect(complexObject).toMatchSnapshot() // Breaks on any change
+expect(complexObject).toMatchSnapshot(); // Breaks on any change
 ```
 
 **Severity:** 🟡 MEDIUM — High maintenance cost
@@ -155,6 +163,7 @@ expect(complexObject).toMatchSnapshot() // Breaks on any change
 #### 🌫️ OBSCURE — Hard to understand
 
 **Detect:**
+
 ```typescript
 // Missing AAA comments
 it("should work", () => {
@@ -172,7 +181,7 @@ it("works", () => { ... })
 it("handles edge case", () => { ... }) // Which edge case?
 
 // Complex setup without helper
-const user = { id: "123", name: "Test", email: "test@test.com", 
+const user = { id: "123", name: "Test", email: "test@test.com",
   role: "admin", createdAt: "2024-01-01", ... } // Use builder!
 
 // Multiple assertions testing different behaviors
@@ -197,6 +206,7 @@ describe("A", () => {
 #### 🔗 COUPLED — Tests depend on each other
 
 **Detect:**
+
 ```typescript
 // Shared state modified by tests
 let user: User
@@ -229,6 +239,7 @@ describe("UserStore", () => {
 #### 🎭 OVER-MOCKED — Too many mocks
 
 **Detect:**
+
 ```typescript
 // More than 3 mocks in a test
 jest.mock("../hooks/useA")
@@ -275,7 +286,7 @@ For each issue found:
 
 For each issue, show before/after:
 
-```
+````
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔍 Issue #1: FLAKY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -291,36 +302,38 @@ Problem: Real setTimeout creates race conditions
 it("should expire session after timeout", async () => {
   const { result } = renderHook(() => useAuth());
   await result.current.login();
-  
+
   // Flaky! Real time passes unpredictably
   await new Promise(r => setTimeout(r, 1000));
-  
+
   expect(result.current.isExpired).toBe(true);
 });
-```
+````
 
 ✅ After:
+
 ```typescript
 it("should expire session after timeout", async () => {
   jest.useFakeTimers();
-  
+
   const { result } = renderHook(() => useAuth());
   await act(async () => {
     await result.current.login();
   });
-  
+
   // Controlled time advancement
   act(() => {
     jest.advanceTimersByTime(1000);
   });
-  
+
   expect(result.current.isExpired).toBe(true);
-  
+
   jest.useRealTimers();
 });
 ```
 
 Why: Fake timers make time deterministic. Test will always pass/fail consistently.
+
 ```
 
 ### Step 6: Classify Fixes by Safety
@@ -352,6 +365,7 @@ Why: Fake timers make time deterministic. Test will always pass/fail consistentl
 **Otherwise:** Interactive per-fix confirmation:
 
 ```
+
 Apply fix #1 (FLAKY — fake timers)? [Y/n/skip all]: y
 Applying...
 ✅ Fixed: useAuth.test.ts:42
@@ -365,7 +379,8 @@ Apply fix #3 (COUPLED — add beforeEach reset)? [Y/n/skip all]: n
 
 Apply fix #4 (OVER-MOCKED — convert to integration)? [Y/n/skip all]: skip all
 ⏭️ Skipping remaining fixes
-```
+
+````
 
 ### Step 8: Verify Fixes
 
@@ -373,9 +388,10 @@ Run tests after applying fixes:
 
 ```bash
 npm test -- --testPathPattern="<testPath>" --no-coverage
-```
+````
 
 Report:
+
 ```
 🧪 Verification:
 
@@ -434,7 +450,7 @@ By category:
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Apply fixes? [Y/n/selective]: 
+Apply fixes? [Y/n/selective]:
 ```
 
 ### After Fixes Applied
@@ -457,12 +473,12 @@ Verification: ✅ All 14 tests passing
 
 ## Error Handling
 
-| Error | Action |
-|-------|--------|
-| File not found | `❌ Test file not found: <path>` |
-| Parse error | `⚠️ Could not parse <file> — syntax error?` |
-| Fix breaks tests | `⚠️ Fix introduced failures. Rolling back...` |
-| Cannot auto-fix | `ℹ️ This issue requires manual refactoring. See suggestion.` |
+| Error            | Action                                                       |
+| ---------------- | ------------------------------------------------------------ |
+| File not found   | `❌ Test file not found: <path>`                             |
+| Parse error      | `⚠️ Could not parse <file> — syntax error?`                  |
+| Fix breaks tests | `⚠️ Fix introduced failures. Rolling back...`                |
+| Cannot auto-fix  | `ℹ️ This issue requires manual refactoring. See suggestion.` |
 
 ## Common Refactoring Patterns
 
@@ -470,7 +486,7 @@ Verification: ✅ All 14 tests passing
 
 ```typescript
 // ❌ Before
-await new Promise(r => setTimeout(r, 1000));
+await new Promise((r) => setTimeout(r, 1000));
 expect(result).toBe(expected);
 
 // ✅ After
@@ -504,10 +520,10 @@ it("works", () => {
 it("should increment counter when increment is called", () => {
   // Arrange
   const counter = createCounter();
-  
+
   // Act
   counter.increment();
-  
+
   // Assert
   expect(counter.value).toBe(1);
 });
@@ -519,8 +535,12 @@ it("should increment counter when increment is called", () => {
 // ❌ Before — shared state
 let store: Store;
 
-it("test 1", () => { store.add(item); });
-it("test 2", () => { expect(store.items).toHaveLength(1); }); // Depends on test 1!
+it("test 1", () => {
+  store.add(item);
+});
+it("test 2", () => {
+  expect(store.items).toHaveLength(1);
+}); // Depends on test 1!
 
 // ✅ After — fresh per test
 let store: Store;
@@ -533,12 +553,12 @@ afterEach(() => {
   store.reset();
 });
 
-it("test 1", () => { 
-  store.add(item); 
+it("test 1", () => {
+  store.add(item);
   expect(store.items).toHaveLength(1);
 });
 
-it("test 2", () => { 
+it("test 2", () => {
   expect(store.items).toHaveLength(0); // Starts empty
 });
 ```
@@ -562,10 +582,10 @@ it("should sync data", async () => {
   const apiStub = new ApiStub().withSyncSuccess();
   const storage = new InMemoryStorage();
   const syncService = new SyncService(apiStub, storage);
-  
+
   // Act
   await syncService.sync();
-  
+
   // Assert — real behavior
   expect(storage.get("lastSync")).toBeDefined();
 });
@@ -624,7 +644,7 @@ Found 8 issues.
 Auto-fixing 3 safe issues...
 
 ✅ Added AAA comments to useAuth.test.ts
-✅ Added afterEach cleanup to useLogin.test.ts  
+✅ Added afterEach cleanup to useLogin.test.ts
 ✅ Added jest.clearAllMocks() to userStore.test.ts
 
 5 issues require manual review:

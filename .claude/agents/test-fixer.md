@@ -1,6 +1,8 @@
 ---
 name: test-fixer
 description: Diagnose and fix failing or flaky tests with detailed root cause analysis
+model: opus
+execution_model: sonnet
 ---
 
 # Test Fixer Agent
@@ -12,6 +14,7 @@ Diagnose and fix tests that fail or are flaky. Analyzes test code, source code, 
 ## Trigger
 
 Use this agent when:
+
 - A test is failing and you don't understand why
 - A test is flaky (passes sometimes, fails others)
 - CI is red and you need to fix tests quickly
@@ -20,6 +23,7 @@ Use this agent when:
 ## Prerequisites
 
 **Required skill — load first:**
+
 ```
 view .claude/skills/testing-conventions/SKILL.md
 ```
@@ -28,14 +32,14 @@ view .claude/skills/testing-conventions/SKILL.md
 
 ## Inputs
 
-| Input | Required | Description |
-|-------|----------|-------------|
-| `testPath` | ✅* | Path to the failing test file |
-| `--from-ci` | ✅* | Parse CI output to find failing tests |
-| `--explain-only` | ❌ | Explain problem without applying fix |
-| `--flaky` | ❌ | Run test multiple times to detect flakiness |
+| Input            | Required | Description                                 |
+| ---------------- | -------- | ------------------------------------------- |
+| `testPath`       | ✅\*     | Path to the failing test file               |
+| `--from-ci`      | ✅\*     | Parse CI output to find failing tests       |
+| `--explain-only` | ❌       | Explain problem without applying fix        |
+| `--flaky`        | ❌       | Run test multiple times to detect flakiness |
 
-*One of `testPath` or `--from-ci` is required.
+\*One of `testPath` or `--from-ci` is required.
 
 ## Workflow
 
@@ -46,6 +50,7 @@ view .claude/skills/testing-conventions/SKILL.md
 ```
 
 Key anti-patterns to check for:
+
 - Testing implementation details
 - Over-mocking
 - Timing-dependent code
@@ -55,11 +60,13 @@ Key anti-patterns to check for:
 ### Step 2: Identify Failing Tests
 
 **Option A: Direct test file**
+
 ```bash
 npm test -- --testPathPattern="<testPath>" --no-coverage 2>&1
 ```
 
 Parse output to identify:
+
 - Which test cases failed
 - Error messages
 - Stack traces
@@ -68,6 +75,7 @@ Parse output to identify:
 **Option B: From CI output (`--from-ci`)**
 
 Parse CI logs to extract:
+
 ```
 # GitHub Actions format
 FAIL src/modules/auth/core/usecases/Login.usecase.test.ts
@@ -76,7 +84,7 @@ FAIL src/modules/auth/core/usecases/Login.usecase.test.ts
     Expected: true
     Received: false
 
-# CircleCI format  
+# CircleCI format
 FAIL src/modules/auth/core/usecases/Login.usecase.test.ts
   LoginUseCase
     ✕ should return user when credentials are valid (45 ms)
@@ -86,20 +94,21 @@ FAIL src/modules/auth/core/usecases/Login.usecase.test.ts
 
 Analyze the failure and classify:
 
-| Category | Indicators | Common Causes |
-|----------|------------|---------------|
-| **ASSERTION_FAIL** | `expect(...).toBe(...)` mismatch | Wrong expectation, code bug, stub misconfigured |
-| **TIMEOUT** | `Exceeded timeout of 5000ms` | Missing `await`, async not handled, infinite loop |
-| **MOCK_ERROR** | `mockFn is not a function`, undefined | Mock not set up, wrong import, jest.mock path |
-| **TYPE_ERROR** | `Cannot read property of undefined` | Missing stub method, null not handled |
-| **FLAKY** | Passes/fails inconsistently | Timing, shared state, test order dependency |
-| **SETUP_ERROR** | `beforeEach` or import fails | Missing dependency, circular import |
+| Category           | Indicators                            | Common Causes                                     |
+| ------------------ | ------------------------------------- | ------------------------------------------------- |
+| **ASSERTION_FAIL** | `expect(...).toBe(...)` mismatch      | Wrong expectation, code bug, stub misconfigured   |
+| **TIMEOUT**        | `Exceeded timeout of 5000ms`          | Missing `await`, async not handled, infinite loop |
+| **MOCK_ERROR**     | `mockFn is not a function`, undefined | Mock not set up, wrong import, jest.mock path     |
+| **TYPE_ERROR**     | `Cannot read property of undefined`   | Missing stub method, null not handled             |
+| **FLAKY**          | Passes/fails inconsistently           | Timing, shared state, test order dependency       |
+| **SETUP_ERROR**    | `beforeEach` or import fails          | Missing dependency, circular import               |
 
 ### Step 4: Deep Analysis
 
 Based on classification, analyze:
 
 **For ASSERTION_FAIL:**
+
 ```typescript
 // 1. Read the test
 // 2. Read the source code being tested
@@ -115,6 +124,7 @@ Based on classification, analyze:
 ```
 
 **For TIMEOUT:**
+
 ```typescript
 // Check for:
 // 1. Missing `await` on async operations
@@ -125,6 +135,7 @@ Based on classification, analyze:
 ```
 
 **For MOCK_ERROR:**
+
 ```typescript
 // Check for:
 // 1. jest.mock() path matches import path exactly
@@ -134,6 +145,7 @@ Based on classification, analyze:
 ```
 
 **For FLAKY (with `--flaky` flag):**
+
 ```bash
 # Run test 10 times to detect flakiness
 for i in {1..10}; do
@@ -142,6 +154,7 @@ done
 ```
 
 Flaky patterns to detect:
+
 - Timing-dependent assertions
 - Shared mutable state between tests
 - Tests depending on execution order
@@ -174,7 +187,7 @@ The test expects `result.success` to be `true`, but it's `undefined`.
 
 Trace:
 1. LoginUseCase.execute() calls authRepository.login()
-2. AuthRepositoryStub.login() returns `ok(user)` 
+2. AuthRepositoryStub.login() returns `ok(user)`
 3. BUT: The Result type changed from { success, data } to { ok, value }
 
 The stub is correct, but the assertion uses the old Result shape.
@@ -235,7 +248,7 @@ Report verification result:
 🧪 Verification:
 
   Run 1: ✅ PASS
-  Run 2: ✅ PASS  
+  Run 2: ✅ PASS
   Run 3: ✅ PASS
 
 ✅ Fix verified! Test passes consistently.
@@ -247,8 +260,8 @@ Or if still failing:
 🧪 Verification:
 
   Run 1: ❌ FAIL
-  
-⚠️ Fix did not resolve the issue. 
+
+⚠️ Fix did not resolve the issue.
 
 Additional analysis needed. Would you like me to:
 1. Try an alternative fix
@@ -303,7 +316,7 @@ Found 3 failing tests:
    Cause: Missing waitFor around assertion
    Fix: Wrap assertion in waitFor()
 
-3. ❌ should handle error state  
+3. ❌ should handle error state
    Category: MOCK_ERROR
    Cause: withError() method missing from stub
    Fix: Add withError() to EventRepositoryStub
@@ -313,12 +326,12 @@ Apply all fixes? [Y/n/selective]:
 
 ## Error Handling
 
-| Error | Action |
-|-------|--------|
-| Test file not found | `❌ Test file not found: <path>` |
-| No failures detected | `✅ All tests pass! Nothing to fix.` |
-| CI output unparseable | `⚠️ Could not parse CI output. Provide test file path directly.` |
-| Fix introduces new failures | `⚠️ Fix caused new failures. Rolling back...` |
+| Error                       | Action                                                                                    |
+| --------------------------- | ----------------------------------------------------------------------------------------- |
+| Test file not found         | `❌ Test file not found: <path>`                                                          |
+| No failures detected        | `✅ All tests pass! Nothing to fix.`                                                      |
+| CI output unparseable       | `⚠️ Could not parse CI output. Provide test file path directly.`                          |
+| Fix introduces new failures | `⚠️ Fix caused new failures. Rolling back...`                                             |
 | Cannot determine root cause | `🤔 Unable to determine root cause automatically. Showing context for manual analysis...` |
 
 ## Common Fix Patterns
@@ -352,7 +365,7 @@ it("should show data", async () => {
   expect(screen.getByText("John")).toBeTruthy();
 });
 
-// ✅ After  
+// ✅ After
 it("should show data", async () => {
   render(<UserList />);
   await waitFor(() => {
@@ -368,8 +381,9 @@ it("should show data", async () => {
 const stub = new UserRepositoryStub();
 
 // ✅ After — stub configured for test scenario
-const stub = new UserRepositoryStub()
-  .withGetUserSuccess(userBuilder().email("john@test.com").build());
+const stub = new UserRepositoryStub().withGetUserSuccess(
+  userBuilder().email("john@test.com").build()
+);
 ```
 
 ### Pattern 4: Shared state leak
@@ -398,7 +412,7 @@ afterEach(() => {
 
 ```typescript
 // ❌ Before — fragile timing
-await new Promise(r => setTimeout(r, 100));
+await new Promise((r) => setTimeout(r, 100));
 expect(result).toBe(expected);
 
 // ✅ After — proper async handling
@@ -492,7 +506,7 @@ Root cause: Promise never resolves because stub doesn't have withNetworkError()
 
 The test calls:
   stub.withNetworkError()
-  
+
 But AuthRepositoryStub doesn't implement this method.
 
 ✅ Proposed fix: Add withNetworkError() to AuthRepositoryStub
