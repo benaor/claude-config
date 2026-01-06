@@ -1,6 +1,10 @@
 ---
+name: design-refactor
+description: Apply design pattern fixes to code with detailed refactoring plan and execution
 model: opus
 execution_model: sonnet
+trigger:
+  - design-refactor
 ---
 
 # Design Refactor Agent

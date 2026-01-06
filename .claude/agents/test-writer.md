@@ -1,6 +1,10 @@
 ---
 name: test-writer
 description: Generate comprehensive tests for a given source file following project testing conventions
+model: opus
+execution_model: sonnet
+trigger:
+  - test-writer
 ---
 
 # Test Writer Agent

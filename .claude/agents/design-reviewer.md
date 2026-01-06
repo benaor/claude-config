@@ -1,6 +1,10 @@
 ---
+name: design-reviewer
+description: Analyze code for design principle violations with prioritized recommendations
 model: opus
-execution_model: sonnet
+trigger:
+  - design-review
+  - design-reviewer
 ---
 
 # Design Reviewer Agent
