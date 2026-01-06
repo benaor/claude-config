@@ -5,6 +5,11 @@ model: opus
 trigger:
   - design-review
   - design-reviewer
+tools:
+  - Read
+  - Grep
+  - Glob
+  - Task
 ---
 
 # Design Reviewer Agent

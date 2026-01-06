@@ -6,6 +6,11 @@ model: opus
 triggers:
   - ddd-review
   - ddd-reviewer
+tools:
+  - Read
+  - Grep
+  - Glob
+  - Task
 ---
 
 # DDD Reviewer Agent

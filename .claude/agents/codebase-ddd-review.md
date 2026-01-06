@@ -5,6 +5,11 @@ description: Architectural DDD analysis applying Pareto principle (80/20)
 model: opus
 triggers:
   - codebase-ddd-review
+tools:
+  - Read
+  - Grep
+  - Glob
+  - Task
 ---
 
 # Codebase DDD Review Agent

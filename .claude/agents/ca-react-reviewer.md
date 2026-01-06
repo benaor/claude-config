@@ -4,6 +4,11 @@ description: Expert in Clean Architecture for React Native/TypeScript. Analyzes 
 model: opus
 trigger:
   - ca-react-reviewer
+tools:
+  - Read
+  - Grep
+  - Glob
+  - Task
 ---
 
 # Clean Architecture React Reviewer

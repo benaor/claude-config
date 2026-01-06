@@ -4,6 +4,11 @@ description: Codebase Design Review
 model: opus
 trigger:
   - codebase-design-review
+tools:
+  - Read
+  - Grep
+  - Glob
+  - Task
 ---
 
 # Codebase Design Review Agent
