@@ -2,8 +2,6 @@
 name: test-coverage-gap
 description: Identify missing test coverage in a module with prioritized recommendations
 model: opus
-execution_model: sonnet
-trigger: test-coverage-gap
 skills: testing-conventions
 ---
 

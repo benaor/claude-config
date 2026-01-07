@@ -2,8 +2,6 @@
 name: test-refactor
 description: Improve test quality by detecting and fixing test code smells
 model: opus
-execution_model: sonnet
-trigger: test-refactor
 skills: testing-conventions
 ---
 

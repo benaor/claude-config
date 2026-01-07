@@ -1,9 +1,6 @@
 ---
 name: design-refactor
 description: Apply design pattern fixes to code with detailed refactoring plan and execution
-model: opus
-execution_model: sonnet
-trigger: design-refactor
 skills: dry, kiss, cqs, cqrs, yagni, pola, wet, fail-fast, tell-dont-ask, law-of-demeter, least-astonishment, composition-over-inheritance, solid-principles, separation-of-concerns
 ---
 

@@ -1,9 +1,7 @@
 ---
-type: agent
 name: codebase-ddd-review
 description: Architectural DDD analysis applying Pareto principle (80/20)
 model: opus
-triggers: codebase-ddd-review
 tools: Read, Grep, Glob, Task, Bash
 permissionMode: plan
 skills: ubiquitous-language, subdomain-classification, context-mapping, bounded-context, entity, value-object, aggregate, repository, domain-service, domain-event, factory, specification

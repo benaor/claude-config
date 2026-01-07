@@ -2,8 +2,6 @@
 name: test-writer
 description: Generate comprehensive tests for a given source file following project testing conventions
 model: opus
-execution_model: sonnet
-trigger: test-writer
 skills: testing-conventions
 ---
 
@@ -16,6 +14,7 @@ Generate complete, ready-to-run test files for React Native TypeScript code. Ana
 ## Trigger
 
 Use this agent when you need to:
+
 - Create tests for a new file (component, hook, store, UseCase, adapter)
 - Generate missing tests for existing code
 - Bootstrap test coverage for a module
@@ -23,6 +22,7 @@ Use this agent when you need to:
 ## Prerequisites
 
 **Required skill — load first:**
+
 ```
 view .claude/skills/testing-conventions/SKILL.md
 ```
@@ -31,12 +31,12 @@ view .claude/skills/testing-conventions/SKILL.md
 
 ## Inputs
 
-| Input | Required | Description |
-|-------|----------|-------------|
-| `filePath` | ✅ | Path to the source file to test |
-| `--dry-run` | ❌ | Preview test without creating file |
-| `--interactive` | ❌ | Select which behaviors to test (DEFAULT) |
-| `--all` | ❌ | Test all identified behaviors without prompting |
+| Input           | Required | Description                                     |
+| --------------- | -------- | ----------------------------------------------- |
+| `filePath`      | ✅       | Path to the source file to test                 |
+| `--dry-run`     | ❌       | Preview test without creating file              |
+| `--interactive` | ❌       | Select which behaviors to test (DEFAULT)        |
+| `--all`         | ❌       | Test all identified behaviors without prompting |
 
 ## Workflow
 
@@ -47,6 +47,7 @@ view .claude/skills/testing-conventions/SKILL.md
 ```
 
 Internalize all conventions before proceeding. Key points to remember:
+
 - AAA pattern (Arrange, Act, Assert)
 - Naming: `should [expected behavior] when [condition]`
 - Test doubles: Stub for Core/UI, Spy/Mock for Infrastructure only
@@ -81,14 +82,14 @@ Read the target file and extract:
 
 **Detection patterns:**
 
-| Pattern | Type | Layer | Test Approach |
-|---------|------|-------|---------------|
-| `use*.ts(x)` | Hook | UI | `renderHook` + act |
-| `*Store.ts` | Store | UI | Direct store testing |
-| `*.usecase.ts` | UseCase | Core | Unit with stubs |
-| `*.adapter.ts` | Adapter | Infrastructure | Integration with spies |
-| `*.entity.ts` | Entity | Core | Pure unit tests |
-| `*.tsx` in `components/` | Component | UI | RTL render |
+| Pattern                  | Type      | Layer          | Test Approach          |
+| ------------------------ | --------- | -------------- | ---------------------- |
+| `use*.ts(x)`             | Hook      | UI             | `renderHook` + act     |
+| `*Store.ts`              | Store     | UI             | Direct store testing   |
+| `*.usecase.ts`           | UseCase   | Core           | Unit with stubs        |
+| `*.adapter.ts`           | Adapter   | Infrastructure | Integration with spies |
+| `*.entity.ts`            | Entity    | Core           | Pure unit tests        |
+| `*.tsx` in `components/` | Component | UI             | RTL render             |
 
 ### Step 3: Locate Existing Test Infrastructure
 
@@ -103,11 +104,13 @@ find . -name "*.builder.ts" | grep -i "<entityName>"
 ```
 
 For each dependency:
+
 - If stub exists → note its path for import
 - If stub doesn't exist → flag for inline creation or skip
 
 For each entity in method signatures:
-- If builder exists → note its path for import  
+
+- If builder exists → note its path for import
 - If builder doesn't exist → create simple inline fixture or flag
 
 ### Step 4: Identify Behaviors to Test
@@ -115,6 +118,7 @@ For each entity in method signatures:
 Analyze the code to identify all testable behaviors:
 
 **For UseCases / Business Logic:**
+
 - ✅ Happy path (success case)
 - ❌ Validation errors (invalid inputs)
 - ❌ Domain errors (business rule violations)
@@ -122,6 +126,7 @@ Analyze the code to identify all testable behaviors:
 - 🔀 Edge cases (empty lists, null values, boundaries)
 
 **For Hooks:**
+
 - ✅ Initial state
 - ✅ State after successful action
 - ❌ State after failed action
@@ -129,6 +134,7 @@ Analyze the code to identify all testable behaviors:
 - 🔀 Edge cases (rapid calls, unmount during async)
 
 **For Components:**
+
 - ✅ Renders correctly with default props
 - 🖱️ User interactions trigger correct handlers
 - 📊 Displays correct data from props/state
@@ -136,12 +142,14 @@ Analyze the code to identify all testable behaviors:
 - ♿ Accessibility (if applicable)
 
 **For Adapters:**
+
 - ✅ Calls external service with correct parameters
 - ✅ Maps response correctly to domain model
 - ❌ Handles error responses
 - ❌ Handles network failures
 
 **For Entities:**
+
 - ✅ Valid construction
 - ❌ Validation rules
 - 🔀 Edge cases for computed properties
@@ -167,6 +175,7 @@ Enter selection (e.g., "1,2,4", "all", "1-5", or press Enter for pre-selected):
 ```
 
 Selection syntax:
+
 - `1,2,4` — specific items
 - `1-5` — range
 - `all` — everything
@@ -246,6 +255,7 @@ Test:   src/modules/auth/core/usecases/Login.usecase.test.ts
 ### Step 8: Write or Preview
 
 **If `--dry-run`:**
+
 ```
 📄 Preview: src/modules/auth/core/usecases/Login.usecase.test.ts
 
@@ -255,6 +265,7 @@ Run without --dry-run to create this file.
 ```
 
 **If creating file:**
+
 ```
 ✅ Created: src/modules/auth/core/usecases/Login.usecase.test.ts
 
@@ -277,6 +288,7 @@ npm test -- --testPathPattern="<testFileName>" --no-coverage
 ```
 
 Report results:
+
 ```
 🧪 Test run complete:
 
@@ -321,13 +333,13 @@ To create this file, run without --dry-run
 
 ## Error Handling
 
-| Error | Action |
-|-------|--------|
-| File not found | `❌ File not found: <path>. Check the path and try again.` |
+| Error               | Action                                                                                                 |
+| ------------------- | ------------------------------------------------------------------------------------------------------ |
+| File not found      | `❌ File not found: <path>. Check the path and try again.`                                             |
 | Not a testable file | `⚠️ File type not recognized. Supported: .ts, .tsx (UseCase, Hook, Store, Component, Adapter, Entity)` |
-| Missing stub | `⚠️ No stub found for <Dependency>. Creating inline stub or skip?` |
-| Test file exists | `⚠️ Test file already exists: <path>. Overwrite? [y/N]` |
-| Tests fail | Show failures with fix suggestions |
+| Missing stub        | `⚠️ No stub found for <Dependency>. Creating inline stub or skip?`                                     |
+| Test file exists    | `⚠️ Test file already exists: <path>. Overwrite? [y/N]`                                                |
+| Tests fail          | Show failures with fix suggestions                                                                     |
 
 ## Examples
 
@@ -383,7 +395,7 @@ describe("useEventListViewModel", () => {
 
 Tests generated: 4
   - should render event title
-  - should render formatted date  
+  - should render formatted date
   - should call onPress when pressed
   - should show attendee count
 ```

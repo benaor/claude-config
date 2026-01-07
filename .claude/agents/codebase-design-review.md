@@ -2,9 +2,8 @@
 name: codebase-design-review
 description: Codebase Design Review
 model: opus
-trigger: codebase-design-review
-tools: Read, Grep, Glob, Task, Bash
 permissionMode: plan
+tools: Read, Grep, Glob, Task, Bash
 skills: dry, kiss, cqs, cqrs, yagni, pola, wet, fail-fast, tell-dont-ask, law-of-demeter, least-astonishment, composition-over-inheritance, solid-principles, separation-of-concerns
 ---
 
@@ -84,16 +83,19 @@ Don't analyze every file. Use smart sampling:
 For codebase review, prioritize principles with architectural impact:
 
 **Primary** (always check):
+
 - SOLID (especially SRP, DIP)
 - Separation of Concerns
 - Law of Demeter
 
 **Secondary** (if time permits):
+
 - DRY / WET
 - Composition over Inheritance
 - KISS / YAGNI
 
 **Tertiary** (mention if obvious):
+
 - CQS / CQRS
 - Tell Don't Ask
 - POLA / Least Astonishment
@@ -112,7 +114,7 @@ Skip minor issues. This is a strategic review, not a line-by-line audit.
 
 ### Step 6: Generate Report
 
-```markdown
+````markdown
 # Codebase Design Review
 
 ## Executive Summary
@@ -120,6 +122,7 @@ Skip minor issues. This is a strategic review, not a line-by-line audit.
 **Health Score**: X/10
 
 **Top 3 Issues**:
+
 1. [Most critical issue]
 2. [Second most critical]
 3. [Third most critical]
@@ -130,13 +133,13 @@ Skip minor issues. This is a strategic review, not a line-by-line audit.
 
 ## Codebase Overview
 
-| Metric | Value |
-|--------|-------|
-| Total files analyzed | X |
-| Total lines of code | ~X |
-| Domain files | X |
-| UI components | X |
-| Services/UseCases | X |
+| Metric               | Value |
+| -------------------- | ----- |
+| Total files analyzed | X     |
+| Total lines of code  | ~X    |
+| Domain files         | X     |
+| UI components        | X     |
+| Services/UseCases    | X     |
 
 ## Architecture Assessment
 
@@ -161,12 +164,15 @@ Skip minor issues. This is a strategic review, not a line-by-line audit.
 **Scope**: X files affected
 
 **Pattern observed**:
+
 ```typescript
 // Example from src/services/UserService.ts
 // Short code snippet showing the issue
 ```
+````
 
 **Also found in**:
+
 - `src/services/OrderService.ts`
 - `src/services/PaymentService.ts`
 
@@ -203,34 +209,40 @@ Skip minor issues. This is a strategic review, not a line-by-line audit.
 ## Refactoring Roadmap
 
 ### Phase 1: Foundation (Week 1-2)
+
 1. [Most critical fix]
 2. [Related fix]
 
 ### Phase 2: Cleanup (Week 3-4)
+
 1. [Secondary fixes]
 
 ### Phase 3: Polish (Ongoing)
+
 1. [Minor improvements]
 
 ---
 
 ## Files Requiring Attention
 
-| File | Lines | Issues | Priority |
-|------|-------|--------|----------|
-| `src/services/UserService.ts` | 450 | SRP, DIP | 🔴 High |
-| `src/screens/HomeScreen.tsx` | 380 | SoC | 🔴 High |
-| `src/utils/helpers.ts` | 290 | DRY | 🟡 Medium |
+| File                          | Lines | Issues   | Priority  |
+| ----------------------------- | ----- | -------- | --------- |
+| `src/services/UserService.ts` | 450   | SRP, DIP | 🔴 High   |
+| `src/screens/HomeScreen.tsx`  | 380   | SoC      | 🔴 High   |
+| `src/utils/helpers.ts`        | 290   | DRY      | 🟡 Medium |
 
 ---
 
 **Launch codebase refactor agent? (y/n)**
+
 ```
 
 ### Step 7: Offer Refactor
 
 ```
+
 Launch codebase refactor agent to address critical issues? (y/n)
+
 ```
 
 If confirmed, invoke `codebase-design-refactor` with the roadmap.
@@ -256,3 +268,4 @@ If confirmed, invoke `codebase-design-refactor` with the roadmap.
 ## Model
 
 Use **Opus** for strategic, architectural-level analysis.
+```

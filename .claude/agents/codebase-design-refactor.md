@@ -1,9 +1,6 @@
 ---
 name: codebase-design-refactor
 description: Codebase Design Refactor
-model: opus
-execution_model: sonnet
-trigger: codebase-design-refactor
 skills: dry, kiss, cqs, cqrs, yagni, pola, wet, fail-fast, tell-dont-ask, law-of-demeter, least-astonishment, composition-over-inheritance, solid-principles, separation-of-concerns
 ---
 
@@ -20,6 +17,7 @@ Load skills from `.claude/skills/design-principles/` as needed.
 ### From Codebase Review (chained)
 
 When launched from `codebase-design-review`, receives:
+
 - Executive summary
 - Critical issues list
 - Refactoring roadmap
@@ -48,6 +46,7 @@ When launched from `codebase-design-review`, receives:
 **If chained**: Use provided roadmap and prioritized issues.
 
 **If standalone**:
+
 1. Run quick analysis (similar to codebase-review but faster)
 2. Identify critical issues only
 3. Generate focused roadmap
@@ -59,12 +58,12 @@ When launched from `codebase-design-review`, receives:
 
 ## Scope
 
-| Metric | Count |
-|--------|-------|
-| Critical issues to address | X |
-| Files to modify | X |
-| Files to create | X |
-| Estimated phases | X |
+| Metric                     | Count |
+| -------------------------- | ----- |
+| Critical issues to address | X     |
+| Files to modify            | X     |
+| Files to create            | X     |
+| Estimated phases           | X     |
 
 ## Strategy
 
@@ -74,13 +73,13 @@ When launched from `codebase-design-review`, receives:
 **Principles**: SRP, DIP
 **Files involved**: 5
 
-| # | Action | File | Change |
-|---|--------|------|--------|
-| 1 | Create | `src/ports/UserPort.ts` | Define interface |
-| 2 | Create | `src/services/AuthService.ts` | Extract from UserService |
-| 3 | Modify | `src/services/UserService.ts` | Remove auth, inject port |
-| 4 | Modify | `src/di/container.ts` | Wire dependencies |
-| 5 | Modify | `src/screens/LoginScreen.tsx` | Update imports |
+| #   | Action | File                          | Change                   |
+| --- | ------ | ----------------------------- | ------------------------ |
+| 1   | Create | `src/ports/UserPort.ts`       | Define interface         |
+| 2   | Create | `src/services/AuthService.ts` | Extract from UserService |
+| 3   | Modify | `src/services/UserService.ts` | Remove auth, inject port |
+| 4   | Modify | `src/di/container.ts`         | Wire dependencies        |
+| 5   | Modify | `src/screens/LoginScreen.tsx` | Update imports           |
 
 ### Phase 2: [Name]
 
@@ -91,6 +90,7 @@ When launched from `codebase-design-review`, receives:
 ## Safety Checklist
 
 Before proceeding:
+
 - [ ] All tests passing? (run `npm test`)
 - [ ] Working branch created? (recommend: `refactor/design-cleanup`)
 - [ ] Uncommitted changes stashed?
@@ -104,7 +104,7 @@ Before proceeding:
 
 Each phase is a logical grouping of related changes:
 
-```markdown
+````markdown
 ## Phase 1: Extract Authentication Service
 
 ### Progress: [0/5]
@@ -121,6 +121,7 @@ export interface UserPort {
   update(id: string, data: UpdateUserDTO): Promise<User>;
 }
 ```
+````
 
 **Create this file?** (y/n/skip phase/abort)
 
@@ -131,7 +132,7 @@ export interface UserPort {
 **Reason**: Extract authentication responsibility (SRP)
 
 ```typescript
-import { AuthPort } from '../ports/AuthPort';
+import { AuthPort } from "../ports/AuthPort";
 
 export class AuthService implements AuthPort {
   constructor(private readonly httpClient: HttpClient) {}
@@ -155,11 +156,13 @@ export class AuthService implements AuthPort {
 **Reason**: Remove authentication responsibility (SRP)
 
 **Changes**:
+
 - Remove: `login()`, `logout()`, `validateToken()`
 - Add: constructor param `authService: AuthPort`
 - Update: method calls to use injected service
 
 **Before**:
+
 ```typescript
 export class UserService {
   async login(credentials: Credentials) {
@@ -170,6 +173,7 @@ export class UserService {
 ```
 
 **After**:
+
 ```typescript
 export class UserService {
   constructor(
@@ -181,7 +185,8 @@ export class UserService {
 ```
 
 **Apply this change?** (y/n/skip phase/abort)
-```
+
+````
 
 ### Step 4: User Controls
 
@@ -213,12 +218,13 @@ After each phase:
 npm run typecheck   # Should pass
 npm test           # Run tests
 git diff --stat    # Review changes
-```
+````
 
 ---
 
 **Continue to Phase 2? (y/n/commit first)**
-```
+
+````
 
 ### Step 6: Final Summary
 
@@ -261,18 +267,20 @@ After all phases (or abort):
 1. **Verify**: Run full test suite
    ```bash
    npm test
-   ```
+````
 
 2. **Review**: Check all changes
+
    ```bash
    git diff
    ```
 
 3. **Commit**: Suggested commits
+
    ```bash
    git add src/ports/ src/services/AuthService.ts
    git commit -m "refactor: extract AuthService (SRP)"
-   
+
    git add src/services/UserService.ts src/di/
    git commit -m "refactor: inject AuthPort into UserService (DIP)"
    ```
@@ -284,10 +292,12 @@ After all phases (or abort):
 ## Remaining Issues
 
 These issues were not addressed in this session:
+
 - [ ] `src/utils/helpers.ts` — DRY violations
 - [ ] `src/screens/HomeScreen.tsx` — SoC concerns
 
 Run `/codebase-design-refactor --phase 3` to continue later.
+
 ```
 
 ## Guidelines
@@ -309,7 +319,7 @@ Run `/codebase-design-refactor --phase 3` to continue later.
 ### Safety
 
 - **Recommend branching**: Before starting
-- **No forced changes**: Every modification needs confirmation  
+- **No forced changes**: Every modification needs confirmation
 - **Preserve functionality**: Refactoring ≠ behavior change
 - **Flag test impacts**: List test files that need manual updates
 
@@ -324,3 +334,4 @@ Never modify:
 
 - **Planning**: **Opus** for strategic roadmap
 - **Execution**: **Sonnet** for file modifications
+```
