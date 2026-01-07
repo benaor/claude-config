@@ -1,5 +1,5 @@
 ---
-name: test-refactor
+name: react-test-refactor
 description: Improve test quality by detecting and fixing test smells
 arguments:
   - name: path
@@ -10,14 +10,14 @@ arguments:
     required: false
 ---
 
-# /test-refactor
+# /react-test-refactor
 
-Improve test quality using the `test-refactor` agent.
+Improve test quality using the `react-test-refactor` agent.
 
 ## Usage
 
 ```
-/test-refactor [path] [options]
+/react-test-refactor [path] [options]
 ```
 
 ## Arguments
@@ -53,7 +53,7 @@ ELSE:
 ### 3. Invoke agent
 
 ```
-Load and execute agent: .claude/agents/test-refactor.md
+Load and execute agent: .claude/agents/react-test-refactor.md
 Pass: resolved path + options
 ```
 
@@ -61,28 +61,28 @@ Pass: resolved path + options
 
 ```bash
 # Analyze specific test file
-/test-refactor src/modules/auth/useAuth.test.ts
+/react-test-refactor src/modules/auth/useAuth.test.ts
 
 # Analyze all tests in a folder
-/test-refactor src/modules/auth/__tests__/
+/react-test-refactor src/modules/auth/__tests__/
 
 # Current file/context shortcut
-/test-refactor .
+/react-test-refactor .
 
 # Check only, no fixes
-/test-refactor src/modules/events --check-only
+/react-test-refactor src/modules/events --check-only
 
 # Auto-fix safe issues
-/test-refactor src/modules/auth --auto-fix
+/react-test-refactor src/modules/auth --auto-fix
 
 # Focus on flaky tests only
-/test-refactor src/modules/auth --category flaky
+/react-test-refactor src/modules/auth --category flaky
 
 # Focus on slow tests
-/test-refactor src/modules/events --category slow
+/react-test-refactor src/modules/events --category slow
 
 # No argument — will prompt or use current file
-/test-refactor
+/react-test-refactor
 ```
 
 ## Options
@@ -150,7 +150,7 @@ Verification: ✅ All tests passing
 
 | Error | Message |
 |-------|---------|
-| No path provided | `❌ No path specified. Usage: /test-refactor <path>` |
+| No path provided | `❌ No path specified. Usage: /react-test-refactor <path>` |
 | Path not found | `❌ Path not found: <path>` |
 | No test files | `⚠️ No test files found in <path>` |
 | Invalid category | `⚠️ Unknown category: <cat>. Valid: flaky, slow, fragile, obscure, coupled, over-mocked` |

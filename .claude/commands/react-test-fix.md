@@ -1,5 +1,5 @@
 ---
-name: test-fix
+name: react-test-fix
 description: Diagnose and fix failing or flaky tests
 arguments:
   - name: path
@@ -10,14 +10,14 @@ arguments:
     required: false
 ---
 
-# /test-fix
+# /react-test-fix
 
-Diagnose and fix failing or flaky tests using the `test-fixer` agent.
+Diagnose and fix failing or flaky tests using the `react-test-fixer` agent.
 
 ## Usage
 
 ```
-/test-fix [path] [options]
+/react-test-fix [path] [options]
 ```
 
 ## Arguments
@@ -54,7 +54,7 @@ ELSE:
 ### 3. Invoke agent
 
 ```
-Load and execute agent: .claude/agents/test-fixer.md
+Load and execute agent: .claude/agents/react-test-fixer.md
 Pass: resolved path + options
 ```
 
@@ -62,22 +62,22 @@ Pass: resolved path + options
 
 ```bash
 # Fix specific test file
-/test-fix src/modules/auth/Login.usecase.test.ts
+/react-test-fix src/modules/auth/Login.usecase.test.ts
 
 # Current file shortcut
-/test-fix .
+/react-test-fix .
 
 # From CI output
-/test-fix --from-ci
+/react-test-fix --from-ci
 
 # Explain problem without fixing
-/test-fix src/modules/auth/useAuth.test.ts --explain-only
+/react-test-fix src/modules/auth/useAuth.test.ts --explain-only
 
 # Detect and fix flaky test
-/test-fix src/modules/events/useEventList.test.ts --flaky
+/react-test-fix src/modules/events/useEventList.test.ts --flaky
 
 # No argument — will prompt or use current file
-/test-fix
+/react-test-fix
 ```
 
 ## Options
@@ -117,8 +117,8 @@ Run without --explain-only to apply.
 
 | Error | Message |
 |-------|---------|
-| No file provided | `❌ No test file specified. Usage: /test-fix <path>` |
+| No file provided | `❌ No test file specified. Usage: /react-test-fix <path>` |
 | File not found | `❌ File not found: <path>` |
-| Not a test file | `⚠️ This is not a test file. Did you mean /test-write?` |
+| Not a test file | `⚠️ This is not a test file. Did you mean /react-test-write?` |
 | All tests pass | `✅ All tests pass! Nothing to fix.` |
 | Cannot parse CI | `⚠️ Could not parse CI output. Provide test path directly.` |

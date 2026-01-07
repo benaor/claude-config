@@ -1,8 +1,8 @@
 ---
-name: test-writer
+name: react-test-writer
 description: Generate comprehensive tests for a given source file following project testing conventions
 model: opus
-skills: testing-conventions
+skills: react-testing-conventions
 ---
 
 # Test Writer Agent
@@ -346,7 +346,7 @@ To create this file, run without --dry-run
 ### Example 1: UseCase
 
 ```
-> test-writer src/modules/auth/core/usecases/Login.usecase.ts
+> react-test-writer src/modules/auth/core/usecases/Login.usecase.ts
 
 Loading conventions from .claude/skills/testing-conventions/SKILL.md...
 
@@ -371,7 +371,7 @@ Enter selection (1-5, all, or Enter for default): [Enter]
 ### Example 2: Hook with dry-run
 
 ```
-> test-writer src/modules/events/ui/viewModels/useEventList.viewModel.ts --dry-run
+> react-test-writer src/modules/events/ui/viewModels/useEventList.viewModel.ts --dry-run
 
 📄 DRY RUN — Preview:
 
@@ -389,7 +389,7 @@ describe("useEventListViewModel", () => {
 ### Example 3: Component
 
 ```
-> test-writer src/modules/events/ui/components/EventCard.tsx --all
+> react-test-writer src/modules/events/ui/components/EventCard.tsx --all
 
 ✅ Created: src/modules/events/ui/components/EventCard.test.tsx
 
@@ -402,7 +402,7 @@ Tests generated: 4
 
 ## Notes
 
-- Always load the testing-conventions skill FIRST
+- Always load the react-testing-conventions skill FIRST
 - Prefer existing stubs/builders over creating new ones
 - Group tests by category (success, errors, edge cases)
 - One logical assertion per test

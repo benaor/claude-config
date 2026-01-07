@@ -1,5 +1,5 @@
 ---
-name: testing-conventions
+name: react-testing-conventions
 description: Testing conventions for React Native with TypeScript. Use this skill when writing tests, reviewing test code, or setting up test infrastructure. Covers unit tests, integration tests, component tests, test doubles (dummy, stub, spy, mock), builder pattern for fixtures, and the testing pyramid.
 ---
 
@@ -22,7 +22,7 @@ Respect the testing pyramid — more unit tests, fewer integration tests, even f
      /      \
     /--------\   Integration
    /          \  Some, medium speed
-  /------------\ 
+  /------------\
  /              \ Unit (*.test.ts)
 /________________\ Many, fast, cheap
 ```
@@ -31,22 +31,22 @@ Respect the testing pyramid — more unit tests, fewer integration tests, even f
 
 Tests must be:
 
-| Principle | Description |
-|-----------|-------------|
-| **F**ast | Tests run quickly — milliseconds, not seconds |
-| **I**ndependent | Tests don't depend on each other, can run in any order |
-| **R**epeatable | Same result every time, no flakiness |
-| **S**elf-validating | Pass or fail, no manual inspection needed |
-| **T**imely | Written at the same time as the code (or before with TDD) |
+| Principle           | Description                                               |
+| ------------------- | --------------------------------------------------------- |
+| **F**ast            | Tests run quickly — milliseconds, not seconds             |
+| **I**ndependent     | Tests don't depend on each other, can run in any order    |
+| **R**epeatable      | Same result every time, no flakiness                      |
+| **S**elf-validating | Pass or fail, no manual inspection needed                 |
+| **T**imely          | Written at the same time as the code (or before with TDD) |
 
 ## File Organization
 
 ### Naming
 
-| Type | Extension | Example |
-|------|-----------|---------|
-| Unit test | `.test.ts` | `Login.usecase.test.ts` |
-| E2E test (Maestro) | `.yaml` | `login-flow.yaml` |
+| Type               | Extension  | Example                 |
+| ------------------ | ---------- | ----------------------- |
+| Unit test          | `.test.ts` | `Login.usecase.test.ts` |
+| E2E test (Maestro) | `.yaml`    | `login-flow.yaml`       |
 
 ### Colocation (Unit & Integration)
 
@@ -127,7 +127,7 @@ it("handles error", ...)
 // ✅ Good — one behavior tested
 it("should return failure when password is too short", async () => {
   const result = await useCase.execute({ email: "a@b.com", password: "123" });
-  
+
   expect(result.success).toBe(false);
   expect(result.error.type).toBe("VALIDATION_ERROR");
 });
@@ -137,13 +137,16 @@ it("should validate all fields", async () => {
   // Testing email validation
   const result1 = await useCase.execute({ email: "", password: "valid123" });
   expect(result1.success).toBe(false);
-  
+
   // Testing password validation
   const result2 = await useCase.execute({ email: "a@b.com", password: "" });
   expect(result2.success).toBe(false);
-  
+
   // Testing success case
-  const result3 = await useCase.execute({ email: "a@b.com", password: "valid123" });
+  const result3 = await useCase.execute({
+    email: "a@b.com",
+    password: "valid123",
+  });
   expect(result3.success).toBe(true);
 });
 ```
@@ -152,12 +155,12 @@ it("should validate all fields", async () => {
 
 ### When to use what
 
-| Test Double | Use Case | Layer |
-|-------------|----------|-------|
-| **Dummy** | Placeholder, never actually used | Core, UI |
-| **Stub** | Returns predefined data | Core, UI |
-| **Spy** | Records calls, verifies interactions | Infrastructure |
-| **Mock** | Spy + predefined behavior | Infrastructure |
+| Test Double | Use Case                             | Layer          |
+| ----------- | ------------------------------------ | -------------- |
+| **Dummy**   | Placeholder, never actually used     | Core, UI       |
+| **Stub**    | Returns predefined data              | Core, UI       |
+| **Spy**     | Records calls, verifies interactions | Infrastructure |
+| **Mock**    | Spy + predefined behavior            | Infrastructure |
 
 ### Rule: Stub the Core, Mock the Infrastructure
 
@@ -226,7 +229,9 @@ class AuthRepositoryStub implements AuthRepository {
 }
 
 // Usage
-const stub = new AuthRepositoryStub().withLoginFailure({ type: "INVALID_CREDENTIALS" });
+const stub = new AuthRepositoryStub().withLoginFailure({
+  type: "INVALID_CREDENTIALS",
+});
 ```
 
 ### Spy / Mock (Infrastructure only)
@@ -247,7 +252,10 @@ describe("AuthApiAdapter", () => {
       "https://api.example.com/auth/login",
       expect.objectContaining({
         method: "POST",
-        body: JSON.stringify({ email: "test@example.com", password: "password" }),
+        body: JSON.stringify({
+          email: "test@example.com",
+          password: "password",
+        }),
       })
     );
   });
@@ -296,7 +304,10 @@ export const userBuilder = () => {
 };
 
 // Usage
-const user = userBuilder().email("custom@test.com").displayName("Custom").build();
+const user = userBuilder()
+  .email("custom@test.com")
+  .displayName("Custom")
+  .build();
 ```
 
 ### Props Builder
@@ -339,11 +350,11 @@ export const eventCardPropsBuilder = () => {
 
 ### Builder naming
 
-| Type | File | Function |
-|------|------|----------|
-| Entity | `User.builder.ts` | `userBuilder()` |
-| Props | `EventCard.props.builder.ts` | `eventCardPropsBuilder()` |
-| Params | `LoginParams.builder.ts` | `loginParamsBuilder()` |
+| Type   | File                         | Function                  |
+| ------ | ---------------------------- | ------------------------- |
+| Entity | `User.builder.ts`            | `userBuilder()`           |
+| Props  | `EventCard.props.builder.ts` | `eventCardPropsBuilder()` |
+| Params | `LoginParams.builder.ts`     | `loginParamsBuilder()`    |
 
 ## Testing Hooks
 
@@ -359,7 +370,7 @@ export function renderHook<Result, Props>(
     initialProps?: Props;
     wrapper?: ComponentType<{ children: ReactNode }>;
     dependencies?: Partial<Dependencies>;
-  },
+  }
 ): RenderHookResult<Result, Props>;
 ```
 
@@ -402,7 +413,7 @@ export function render(
   options?: {
     wrapper?: ComponentType<{ children: ReactNode }>;
     dependencies?: Partial<Dependencies>;
-  },
+  }
 ): RenderResult;
 ```
 
@@ -424,7 +435,7 @@ describe("LoginScreen", () => {
 
   it("should call login when submit is pressed", async () => {
     const authRepositoryStub = new AuthRepositoryStub();
-    
+
     render(<LoginScreen />, {
       dependencies: { authRepository: authRepositoryStub },
     });
@@ -515,16 +526,14 @@ describe("useProfileViewModel", () => {
 
   it("should display user when authenticated", () => {
     // Arrange — set state directly
-    authStore.setState({ 
+    authStore.setState({
       user: userBuilder().displayName("John").build(),
       isAuthenticated: true,
     });
 
     const { result } = renderHook(() => useProfileViewModel(), {
       wrapper: ({ children }) => (
-        <AuthStoreProvider store={authStore}>
-          {children}
-        </AuthStoreProvider>
+        <AuthStoreProvider store={authStore}>{children}</AuthStoreProvider>
       ),
     });
 
@@ -537,9 +546,7 @@ describe("useProfileViewModel", () => {
 
     const { result } = renderHook(() => useProfileViewModel(), {
       wrapper: ({ children }) => (
-        <AuthStoreProvider store={authStore}>
-          {children}
-        </AuthStoreProvider>
+        <AuthStoreProvider store={authStore}>{children}</AuthStoreProvider>
       ),
     });
 

@@ -1,5 +1,5 @@
 ---
-name: test-coverage
+name: react-test-coverage
 description: Identify missing test coverage in a module
 arguments:
   - name: path
@@ -10,14 +10,14 @@ arguments:
     required: false
 ---
 
-# /test-coverage
+# /react-test-coverage
 
-Identify missing test coverage using the `test-coverage-gap` agent.
+Identify missing test coverage using the `react-test-coverage-gap` agent.
 
 ## Usage
 
 ```
-/test-coverage [path] [options]
+/react-test-coverage [path] [options]
 ```
 
 ## Arguments
@@ -53,7 +53,7 @@ ELSE:
 ### 3. Invoke agent
 
 ```
-Load and execute agent: .claude/agents/test-coverage-gap.md
+Load and execute agent: .claude/agents/react-test-coverage-gap.md
 Pass: resolved path + options
 ```
 
@@ -61,22 +61,22 @@ Pass: resolved path + options
 
 ```bash
 # Scan specific module
-/test-coverage src/modules/events
+/react-test-coverage src/modules/events
 
 # Current module (derived from current file)
-/test-coverage .
+/react-test-coverage .
 
 # Only show critical gaps
-/test-coverage src/modules/auth --high-only
+/react-test-coverage src/modules/auth --high-only
 
 # Generate tests for all gaps
-/test-coverage src/modules/favorites --generate
+/react-test-coverage src/modules/favorites --generate
 
 # JSON output for CI
-/test-coverage src/modules/events --json
+/react-test-coverage src/modules/events --json
 
 # No argument — will prompt or detect from current file
-/test-coverage
+/react-test-coverage
 ```
 
 ## Options
@@ -84,7 +84,7 @@ Pass: resolved path + options
 | Option | Description |
 |--------|-------------|
 | `--high-only` | Show only HIGH priority gaps |
-| `--generate` | Auto-generate tests for gaps (calls test-writer) |
+| `--generate` | Auto-generate tests for gaps (calls react-test-writer) |
 | `--json` | Output as JSON for CI integration |
 
 ## Output
@@ -129,7 +129,7 @@ With `--json`:
 
 | Error | Message |
 |-------|---------|
-| No path provided | `❌ No module specified. Usage: /test-coverage <path>` |
+| No path provided | `❌ No module specified. Usage: /react-test-coverage <path>` |
 | Path not found | `❌ Module not found: <path>` |
 | Not a directory | `⚠️ Path is not a directory: <path>` |
 | No source files | `⚠️ No .ts/.tsx files found in <path>` |

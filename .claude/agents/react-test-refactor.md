@@ -1,8 +1,8 @@
 ---
-name: test-refactor
+name: react-test-refactor
 description: Improve test quality by detecting and fixing test code smells
 model: opus
-skills: testing-conventions
+skills: react-testing-conventions
 ---
 
 # Test Refactor Agent
@@ -620,7 +620,7 @@ it("should display user name", () => {
 ### Example 1: Check only
 
 ```
-> test-refactor src/modules/auth --check-only
+> react-test-refactor src/modules/auth --check-only
 
 🔍 Test Quality Report: src/modules/auth
 
@@ -636,7 +636,7 @@ Run without --check-only to fix.
 ### Example 2: Auto-fix safe issues
 
 ```
-> test-refactor src/modules/auth --auto-fix
+> react-test-refactor src/modules/auth --auto-fix
 
 🔍 Analyzing tests...
 
@@ -656,7 +656,7 @@ Auto-fixing 3 safe issues...
 ### Example 3: Focus on category
 
 ```
-> test-refactor src/modules/auth --category flaky
+> react-test-refactor src/modules/auth --category flaky
 
 🔍 Scanning for FLAKY issues only...
 

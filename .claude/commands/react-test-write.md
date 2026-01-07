@@ -1,5 +1,5 @@
 ---
-name: test-write
+name: react-test-write
 description: Generate tests for a source file
 arguments:
   - name: path
@@ -10,14 +10,14 @@ arguments:
     required: false
 ---
 
-# /test-write
+# /react-test-write
 
-Generate tests for a source file using the `test-writer` agent.
+Generate tests for a source file using the `react-test-writer` agent.
 
 ## Usage
 
 ```
-/test-write [path] [options]
+/react-test-write [path] [options]
 ```
 
 ## Arguments
@@ -53,7 +53,7 @@ ELSE:
 ### 3. Invoke agent
 
 ```
-Load and execute agent: .claude/agents/test-writer.md
+Load and execute agent: .claude/agents/react-test-writer.md
 Pass: resolved path + options
 ```
 
@@ -61,19 +61,19 @@ Pass: resolved path + options
 
 ```bash
 # Explicit path
-/test-write src/modules/auth/Login.usecase.ts
+/react-test-write src/modules/auth/Login.usecase.ts
 
 # Current file shortcut
-/test-write .
+/react-test-write .
 
 # With options
-/test-write src/modules/auth/Login.usecase.ts --dry-run
+/react-test-write src/modules/auth/Login.usecase.ts --dry-run
 
 # Test all behaviors (no interactive selection)
-/test-write src/modules/events/CreateEvent.usecase.ts --all
+/react-test-write src/modules/events/CreateEvent.usecase.ts --all
 
 # No argument — will prompt or use current file
-/test-write
+/react-test-write
 ```
 
 ## Options
@@ -103,7 +103,7 @@ On dry-run:
 
 | Error | Message |
 |-------|---------|
-| No file provided/detected | `❌ No file specified. Usage: /test-write <path>` |
+| No file provided/detected | `❌ No file specified. Usage: /react-test-write <path>` |
 | File not found | `❌ File not found: <path>` |
-| Already a test file | `⚠️ This is already a test file. Did you mean /test-fix?` |
+| Already a test file | `⚠️ This is already a test file. Did you mean /react-test-fix?` |
 | Test file exists | `⚠️ Test file already exists: <path>. Overwrite? [y/N]` |

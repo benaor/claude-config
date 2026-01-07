@@ -1,8 +1,8 @@
 ---
-name: test-coverage-gap
+name: react-test-coverage-gap
 description: Identify missing test coverage in a module with prioritized recommendations
 model: opus
-skills: testing-conventions
+skills: react-testing-conventions
 ---
 
 # Test Coverage Gap Agent
@@ -36,7 +36,7 @@ view .claude/skills/testing-conventions/SKILL.md
 | ------------- | -------- | ------------------------------------------------ |
 | `modulePath`  | ✅       | Path to module/folder to analyze                 |
 | `--high-only` | ❌       | Show only HIGH priority gaps                     |
-| `--generate`  | ❌       | Auto-generate tests for gaps (calls test-writer) |
+| `--generate`  | ❌       | Auto-generate tests for gaps (calls react-test-writer) |
 | `--json`      | ❌       | Output as JSON for CI integration                |
 
 ## Workflow
@@ -271,21 +271,21 @@ Generate tests automatically? [y/N]:
 
 ### Step 8: Generate Tests (Optional)
 
-If `--generate` flag is set, call `test-writer` for each gap:
+If `--generate` flag is set, call `react-test-writer` for each gap:
 
 ```
 🔧 Generating tests for HIGH priority gaps...
 
 1/3 DeleteEvent.usecase.ts
-    → Calling test-writer...
+    → Calling react-test-writer...
     ✅ Created: DeleteEvent.usecase.test.ts (4 tests)
 
 2/3 CreateEvent.usecase.ts (add error cases)
-    → Calling test-writer --append...
+    → Calling react-test-writer --append...
     ✅ Added: 3 tests to CreateEvent.usecase.test.ts
 
 3/3 EventRepository.adapter.ts
-    → Calling test-writer...
+    → Calling react-test-writer...
     ✅ Created: EventRepository.adapter.test.ts (5 tests)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -358,14 +358,14 @@ Run all tests: npm test -- --testPathPattern="events"
 | Path not found    | `❌ Module not found: <path>`                                       |
 | No source files   | `⚠️ No .ts/.tsx files found in <path>`                              |
 | Cannot parse file | `⚠️ Could not analyze <file> — syntax error?`                       |
-| test-writer fails | `⚠️ Could not generate tests for <file>. Run test-writer manually.` |
+| react-test-writer fails | `⚠️ Could not generate tests for <file>. Run react-test-writer manually.` |
 
 ## Examples
 
 ### Example 1: Quick audit
 
 ```
-> test-coverage-gap src/modules/events --high-only
+> react-test-coverage-gap src/modules/events --high-only
 
 📊 Coverage Gap Report: src/modules/events
 
@@ -381,7 +381,7 @@ Generate tests? [y/N]: n
 ### Example 2: Full audit with generation
 
 ```
-> test-coverage-gap src/modules/auth --generate
+> react-test-coverage-gap src/modules/auth --generate
 
 📊 Coverage Gap Report: src/modules/auth
 
@@ -399,7 +399,7 @@ Total: 11 new tests generated
 ### Example 3: CI integration
 
 ```
-> test-coverage-gap src/modules/events --json > coverage-report.json
+> react-test-coverage-gap src/modules/events --json > coverage-report.json
 
 # In CI, fail if HIGH priority gaps exist:
 if jq '.gaps[] | select(.priority == "HIGH")' coverage-report.json | grep -q .; then
@@ -414,5 +414,5 @@ fi
 - HIGH priority = must fix before merge/release
 - Adapt recommendations to team context
 - JSON output enables CI integration
-- `--generate` is interactive by default (calls test-writer)
+- `--generate` is interactive by default (calls react-test-writer)
 - Consider file complexity when estimating effort

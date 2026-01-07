@@ -1,8 +1,8 @@
 ---
-name: test-fixer
+name: react-test-fixer
 description: Diagnose and fix failing or flaky tests with detailed root cause analysis
 model: opus
-skills: testing-conventions
+skills: react-testing-conventions
 ---
 
 # Test Fixer Agent
@@ -426,7 +426,7 @@ await waitFor(() => {
 ### Example 1: Fix assertion failure
 
 ```
-> test-fixer src/modules/auth/core/usecases/Login.usecase.test.ts
+> react-test-fixer src/modules/auth/core/usecases/Login.usecase.test.ts
 
 🔍 Running tests to identify failures...
 
@@ -454,7 +454,7 @@ Apply fix? [Y/n]: y
 ### Example 2: Fix flaky test
 
 ```
-> test-fixer src/modules/events/ui/viewModels/useEventList.test.ts --flaky
+> react-test-fixer src/modules/events/ui/viewModels/useEventList.test.ts --flaky
 
 🔍 Running test 10 times to detect flakiness...
 
@@ -490,7 +490,7 @@ Apply fix? [Y/n]: y
 ### Example 3: From CI
 
 ```
-> test-fixer --from-ci
+> react-test-fixer --from-ci
 
 Paste CI output (end with empty line):
 FAIL src/modules/auth/Login.usecase.test.ts
