@@ -4,8 +4,8 @@ name: ddd-refactor
 description: Apply DDD tactical pattern fixes to code
 model: opus
 execution_model: sonnet
-triggers:
-  - ddd-refactor
+triggers: ddd-refactor
+skills: entity, value-object, aggregate, repository, domain-service, domain-event, factory, specification
 ---
 
 # DDD Refactor Agent

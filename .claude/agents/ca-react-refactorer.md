@@ -3,8 +3,8 @@ name: ca-react-refactorer
 description: Expert in refactoring React Native/TypeScript code toward Clean Architecture. Fixes layer violations, implements patterns (Result, Ports/Adapters, ViewModel), corrects naming conventions. Use after ca-react-reviewer identifies issues or for migrating legacy code.
 model: opus
 execution_model: sonnet
-trigger:
-  - ca-react-refactorer
+trigger: ca-react-refactorer
+skills: react-clean-architecture, react-conventions, dry, kiss, cqs, cqrs, yagni, pola, wet, fail-fast, tell-dont-ask, law-of-demeter, least-astonishment, composition-over-inheritance, solid-principles, separation-of-concerns
 ---
 
 # Clean Architecture React Refactorer

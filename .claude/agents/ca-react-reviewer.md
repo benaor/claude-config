@@ -2,13 +2,10 @@
 name: ca-react-reviewer
 description: Expert in Clean Architecture for React Native/TypeScript. Analyzes code for layer violations, pattern compliance, naming conventions, and architectural issues. Use for code reviews, architecture audits, and identifying refactoring opportunities.
 model: opus
-trigger:
-  - ca-react-reviewer
-tools:
-  - Read
-  - Grep
-  - Glob
-  - Task
+trigger: ca-react-reviewer
+tools: Read, Grep, Glob, Task, Bash
+permissionMode: plan
+skills: react-clean-architecture, react-conventions, dry, kiss, cqs, cqrs, yagni, pola, wet, fail-fast, tell-dont-ask, law-of-demeter, least-astonishment, composition-over-inheritance, solid-principles, separation-of-concerns
 ---
 
 # Clean Architecture React Reviewer

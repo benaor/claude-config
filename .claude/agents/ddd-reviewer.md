@@ -3,14 +3,10 @@ type: agent
 name: ddd-reviewer
 description: Analyze code for DDD tactical pattern violations
 model: opus
-triggers:
-  - ddd-review
-  - ddd-reviewer
-tools:
-  - Read
-  - Grep
-  - Glob
-  - Task
+triggers: ddd-review, ddd-reviewer
+tools: Read, Grep, Glob, Task, Bash
+skills: entity, value-object, aggregate, repository, domain-service, domain-event, factory, specification
+permissionMode: plan
 ---
 
 # DDD Reviewer Agent

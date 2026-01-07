@@ -4,8 +4,8 @@ name: codebase-ddd-refactor
 description: Apply architectural DDD fixes across codebase
 model: opus
 execution_model: sonnet
-triggers:
-  - codebase-ddd-refactor
+triggers: codebase-ddd-refactor
+skills: ubiquitous-language, subdomain-classification, context-mapping, bounded-context, entity, value-object, aggregate, repository, domain-service, domain-event, factory, specification
 ---
 
 # Codebase DDD Refactor Agent

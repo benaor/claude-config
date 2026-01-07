@@ -2,13 +2,10 @@
 name: codebase-design-review
 description: Codebase Design Review
 model: opus
-trigger:
-  - codebase-design-review
-tools:
-  - Read
-  - Grep
-  - Glob
-  - Task
+trigger: codebase-design-review
+tools: Read, Grep, Glob, Task, Bash
+permissionMode: plan
+skills: dry, kiss, cqs, cqrs, yagni, pola, wet, fail-fast, tell-dont-ask, law-of-demeter, least-astonishment, composition-over-inheritance, solid-principles, separation-of-concerns
 ---
 
 # Codebase Design Review Agent

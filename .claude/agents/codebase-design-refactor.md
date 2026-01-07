@@ -3,8 +3,8 @@ name: codebase-design-refactor
 description: Codebase Design Refactor
 model: opus
 execution_model: sonnet
-trigger:
-  - codebase-design-refactor
+trigger: codebase-design-refactor
+skills: dry, kiss, cqs, cqrs, yagni, pola, wet, fail-fast, tell-dont-ask, law-of-demeter, least-astonishment, composition-over-inheritance, solid-principles, separation-of-concerns
 ---
 
 # Codebase Design Refactor Agent

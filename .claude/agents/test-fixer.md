@@ -3,8 +3,8 @@ name: test-fixer
 description: Diagnose and fix failing or flaky tests with detailed root cause analysis
 model: opus
 execution_model: sonnet
-trigger:
-  - test-fixer
+trigger: test-fixer
+skills: testing-conventions
 ---
 
 # Test Fixer Agent

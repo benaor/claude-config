@@ -2,14 +2,10 @@
 name: design-reviewer
 description: Analyze code for design principle violations with prioritized recommendations
 model: opus
-trigger:
-  - design-review
-  - design-reviewer
-tools:
-  - Read
-  - Grep
-  - Glob
-  - Task
+trigger: design-review, design-reviewer
+tools: Read, Grep, Glob, Task, Bash
+permissionMode: plan
+skills: dry, kiss, cqs, cqrs, yagni, pola, wet, fail-fast, tell-dont-ask, law-of-demeter, least-astonishment, composition-over-inheritance, solid-principles, separation-of-concerns
 ---
 
 # Design Reviewer Agent

@@ -3,8 +3,8 @@ name: test-coverage-gap
 description: Identify missing test coverage in a module with prioritized recommendations
 model: opus
 execution_model: sonnet
-trigger:
-  - test-coverage-gap
+trigger: test-coverage-gap
+skills: testing-conventions
 ---
 
 # Test Coverage Gap Agent
@@ -16,6 +16,7 @@ Scan a module or folder to identify untested code, missing test scenarios, and t
 ## Trigger
 
 Use this agent when:
+
 - Starting work on a module and want to know test status
 - Preparing for a release and need coverage audit
 - Onboarding to a codebase and assessing test quality
@@ -24,6 +25,7 @@ Use this agent when:
 ## Prerequisites
 
 **Required skill — load first:**
+
 ```
 view .claude/skills/testing-conventions/SKILL.md
 ```
@@ -32,12 +34,12 @@ view .claude/skills/testing-conventions/SKILL.md
 
 ## Inputs
 
-| Input | Required | Description |
-|-------|----------|-------------|
-| `modulePath` | ✅ | Path to module/folder to analyze |
-| `--high-only` | ❌ | Show only HIGH priority gaps |
-| `--generate` | ❌ | Auto-generate tests for gaps (calls test-writer) |
-| `--json` | ❌ | Output as JSON for CI integration |
+| Input         | Required | Description                                      |
+| ------------- | -------- | ------------------------------------------------ |
+| `modulePath`  | ✅       | Path to module/folder to analyze                 |
+| `--high-only` | ❌       | Show only HIGH priority gaps                     |
+| `--generate`  | ❌       | Auto-generate tests for gaps (calls test-writer) |
+| `--json`      | ❌       | Output as JSON for CI integration                |
 
 ## Workflow
 
@@ -48,6 +50,7 @@ view .claude/skills/testing-conventions/SKILL.md
 ```
 
 Key concepts for gap analysis:
+
 - Testing pyramid (unit > integration > E2E)
 - What should be tested per layer
 - Test doubles usage
@@ -70,10 +73,10 @@ Build file inventory:
       type: "UseCase",
       layer: "Core",
       hasTest: boolean,
-      testPath?: string
+      testPath: string,
     },
     // ...
-  ]
+  ];
 }
 ```
 
@@ -93,17 +96,20 @@ Files without ANY test = immediate HIGH priority gap.
 For files WITH tests, analyze coverage depth:
 
 **4.1. Parse source file to extract:**
+
 - Public methods/functions
 - Branches (if/else, switch, ternary)
 - Error handling paths (try/catch, Result failures)
 - Edge cases (null checks, empty arrays, boundaries)
 
 **4.2. Parse test file to identify:**
+
 - What behaviors are tested
 - What scenarios are covered
 - Happy path vs error paths ratio
 
 **4.3. Compute gaps:**
+
 ```typescript
 {
   file: "CreateEvent.usecase.ts",
@@ -122,6 +128,7 @@ For files WITH tests, analyze coverage depth:
 ### Step 5: Categorize by Priority
 
 **🔴 HIGH Priority — Test immediately:**
+
 - Business logic (UseCases) without any tests
 - Error handling not tested
 - Security-related code untested
@@ -129,12 +136,14 @@ For files WITH tests, analyze coverage depth:
 - Public API methods untested
 
 **🟡 MEDIUM Priority — Should test soon:**
+
 - Edge cases missing (empty lists, null values, boundaries)
 - Some branches not covered
 - Integration points partially tested
 - State management partially tested
 
 **🟢 LOW Priority — Nice to have:**
+
 - Happy path covered but not exhaustive
 - Internal helper functions
 - Logging/telemetry code
@@ -156,6 +165,7 @@ find tests/flows -name "*.yaml" | grep -i "<moduleName>"
 ```
 
 Ideal pyramid:
+
 ```
 Unit:        70% ████████████████████░░░░░░░░░
 Integration: 20% ██████░░░░░░░░░░░░░░░░░░░░░░░
@@ -163,6 +173,7 @@ E2E:         10% ███░░░░░░░░░░░░░░░░░░
 ```
 
 Flag imbalances:
+
 - Too many E2E tests → suggest converting to integration/unit
 - No integration tests for adapters → flag missing adapter tests
 - Only unit tests → may miss integration issues
@@ -227,7 +238,7 @@ Files without:      4 (33%)
 6. 💡 Event.entity.ts — BASIC COVERAGE
    Tested: Valid construction
    Optional: Add validation edge cases
-   
+
 7. 💡 formatEventDate.util.ts — HAPPY PATH ONLY
    Tested: Standard date format
    Optional: Test edge cases (null, invalid)
@@ -344,11 +355,11 @@ Run all tests: npm test -- --testPathPattern="events"
 
 ## Error Handling
 
-| Error | Action |
-|-------|--------|
-| Path not found | `❌ Module not found: <path>` |
-| No source files | `⚠️ No .ts/.tsx files found in <path>` |
-| Cannot parse file | `⚠️ Could not analyze <file> — syntax error?` |
+| Error             | Action                                                              |
+| ----------------- | ------------------------------------------------------------------- |
+| Path not found    | `❌ Module not found: <path>`                                       |
+| No source files   | `⚠️ No .ts/.tsx files found in <path>`                              |
+| Cannot parse file | `⚠️ Could not analyze <file> — syntax error?`                       |
 | test-writer fails | `⚠️ Could not generate tests for <file>. Run test-writer manually.` |
 
 ## Examples
